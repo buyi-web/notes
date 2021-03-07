@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实现三栏水平布局之圣杯布局</title>
+    <style>
+        .left,
+        .main,
+        .right {
+            min-height: 300px;
+        }
+
+        .left {
+            width: 200px;
+            background-color: thistle;
+        }
+
+        .main {
+            background-color: #999;
+        }
+
+        .right {
+            width: 300px;
+            background-color: violet;
+        }
+
+        /* 圣杯布局关键代码 */
+        .left,
+        .main,
+        .right {
+            float: left;
+            position: relative;
+        }
+        .main {
+            width: 100%;
+        }
+        .container {
+            padding-left: 200px;
+            padding-right: 300px;
+        }
+        .left {
+            margin-left: -100%;
+            left: -200px;
+        }
+        .right {
+            margin-left: -300px;
+            right: -300px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="main">main</div>
+        <div class="left">left</div>
+        <div class="right">right</div>
+    </div>
+</body>
+
+</html>
