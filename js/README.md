@@ -2,7 +2,7 @@
 
 ## [变量](https://github.com/buyi-web/notes/blob/master/js/%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B.md)
 
-## BOM
+## [BOM](https://github.com/buyi-web/notes/blob/master/js/BOM.md)
 
 ## 其他常见问题
 
