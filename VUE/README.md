@@ -36,6 +36,18 @@ mvc 和 mvvm 其实区别并不大。都是一种设计思想。主要就是 mvc
 
 假如说我们自己写的data名称和vue中自带的属性冲突了，那么就会覆盖vue内部的属性，所以为了防止名称冲突，vue会把自己内部的属性成员名称前加上$或_，如果加上的是$，代表是我们可以使用的，如果加上的是_，是vue自己内部使用的方法或属性，我们不需要调用
 
+## v-if 和 v-show 的区别
+
+1. v-if能够控制是否生成vnode,也就简介控制了是否生成对应的dom。当v-if为true时，会生成对应的vnode，并生成对应的dom;为false时不会生成vnode和dom
+
+2. v-show始终都会生成vnode,也就间接始终生成dom，他只是控制dom的display的属性，为true时不做任何处理，为false时display为none
+
+3. v-if 有更高的切换开销，v-show 有更高的初始渲染开销，如果需要非常频繁地切换，则使用 v-show 较好，如果在运行时条件很少改变，则使用 v-if 较好
+
+4. v-show不支持`<template>`元素
+
+5. v-show不支持v-else/v-else-if
+
 ## 组件_通信
 
 **prop**
