@@ -272,6 +272,119 @@ ref不再推荐使用字符串赋值，字符串赋值的方式将来可能会�
 
 **函数**
 
+函数的调用时间：
+
+1. componentDidMount(组件挂载完成)的时候会调用该函数
+   1. 在componentDidMount事件中可以使用ref
+2. 如果ref的值发生了变动（旧的函数被新的函数替代），分别调用旧的函数以及新的函数，时间点出现在componentDidUpdate之前
+   1. 旧的函数被调用时，传递null
+   2. 新的函数被调用时，传递对象
+3. 如果ref所在的组件被卸载，会调用函数
+
+**谨慎使用ref**
+
+能够使用属性和状态进行控制，就不要使用ref。
+
+1. 调用真实的DOM对象中的方法
+2. 某个时候需要调用类组件的方法
+
+## Ref转发
+
+React.forwardRef方法：
+
+1. 参数，传递的是函数组件，不能是类组件，并且，函数组件需要有第二个参数来得到ref
+2. 返回值，返回一个新的组件
+
+使用:
+```jsx
+import React from 'react'
+
+function A(props, ref) {
+    return <h1 ref={ref}>
+        组件A
+        <span>{props.words}</span>
+    </h1>
+}
+
+//传递函数组件A，得到一个新组件NewA
+const NewA = React.forwardRef(A);
+
+export default class App extends React.Component {
+
+    ARef = React.createRef()
+
+    componentDidMount() {
+        console.log(this.ARef); //null
+    }
 
 
+    render() {
+        return (
+            <div>
+                <NewA ref={this.ARef} words="asfsafasfasfs" />
+                {/* this.ARef.current:  h1 */}
+            </div>
+        )
+    }
+}
 
+```
+
+## Context
+
+上下文：Context，表示做某一些事情的环境
+
+React中的上下文特点：
+
+1. 当某个组件创建了上下文后，上下文中的数据，会被所有后代组件共享
+2. 如果某个组件依赖了上下文，会导致该组件不再纯粹（外部数据仅来源于属性props）
+3. 一般情况下，用于第三方组件（通用组件）
+
+### 旧的API
+
+**创建上下文**
+
+只有类组件才可以创建上下文
+
+1. 给类组件书写静态属性 childContextTypes，使用该属性对上下文中的数据类型进行约束
+2. 添加实例方法 getChildContext，该方法返回的对象，即为上下文中的数据，该数据必须满足类型约束，该方法会在每次render之后运行
+
+**使用上下文中的数据**
+
+要求：如果要使用上下文中的数据，组件必须有一个静态属性 contextTypes，该属性描述了需要获取的上下文中的数据类型
+
+1. 可以在组件的构造函数中，通过第二个参数，获取上下文数据
+2. **从组件的context属性中获取**
+3. 在函数组件中，通过第二个参数，获取上下文数据
+
+**上下文的数据变化**
+
+上下文中的数据不可以直接变化，最终都是通过状态改变
+
+在上下文中加入一个处理函数，可以用于后代组件更改上下文的数据
+
+### 新版API
+
+旧版API存在严重的效率问题，并且容易导致滥用
+
+**创建上下文**
+
+上下文是一个独立于组件的对象，该对象通过React.createContext(默认值)创建
+
+返回的是一个包含两个属性的对象
+
+1. Provider属性：生产者。一个组件，该组件会创建一个上下文，该组件有一个value属性，通过该属性，可以为其数据赋值
+   1. 同一个Provider，不要用到多个组件中，如果需要在其他组件中使用该数据，应该考虑将数据提升到更高的层次
+2. Consumer属性：后续讲解
+
+**使用上下文中的数据**
+
+1. 在类组件中，直接使用this.context获取上下文数据
+   1. 要求：必须拥有静态属性 contextType , 应赋值为创建的上下文对象
+2. 在函数组件中，需要使用Consumer来获取上下文数据
+   1. Consumer是一个组件
+   2. 它的子节点，是一个函数（它的props.children需要传递一个函数）
+
+**注意细节**
+
+如果，上下文提供者（Context.Provider）中的value属性发生变化(Object.is比较)，会导致该上下文提供的所有后代元素全部重新渲染，无论该子元素是否有优化（无论shouldComponentUpdate函数返回什么结果）
