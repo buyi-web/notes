@@ -388,3 +388,73 @@ React中的上下文特点：
 **注意细节**
 
 如果，上下文提供者（Context.Provider）中的value属性发生变化(Object.is比较)，会导致该上下文提供的所有后代元素全部重新渲染，无论该子元素是否有优化（无论shouldComponentUpdate函数返回什么结果）
+
+## Portals
+
+插槽：将一个React元素渲染到指定的DOM容器中
+
+ReactDOM.createPortal(React元素, 真实的DOM容器)，该函数返回一个React元素
+
+**注意事件冒泡**
+
+1. React中的事件是包装过的
+2. 它的事件冒泡是根据虚拟DOM树来冒泡的，与真实的DOM树无关。
+
+## 错误边界
+
+默认情况下，若一个组件在**渲染期间**（render）发生错误，会导致整个组件树全部被卸载
+
+错误边界：是一个组件，该组件会捕获到渲染期间（render）子组件发生的错误，并有能力阻止错误继续传播
+
+**让某个组件捕获错误**
+
+1. 编写生命周期函数 getDerivedStateFromError
+   1. 静态函数
+   2. 运行时间点：渲染子组件的过程中，发生错误之后，在更新页面之前
+   3. **注意：只有子组件发生错误，才会运行该函数**
+   4. 该函数返回一个对象，React会将该对象的属性覆盖掉当前组件的state
+   5. 参数：错误对象
+   6. 通常，该函数用于改变状态
+2. 编写生命周期函数 componentDidCatch
+   1. 实例方法
+   2. 运行时间点：渲染子组件的过程中，发生错误，更新页面之后，由于其运行时间点比较靠后，因此不太会在该函数中改变状态
+   3. 通常，该函数用于记录错误消息
+
+## # React中的事件
+
+React内置的DOM组件中的事件
+
+1. 给document注册事件
+2. 几乎所有的元素的事件处理，均在document的事件中处理
+   1. 一些不冒泡的事件，是直接在元素上监听
+   2. 一些document上面没有的事件，直接在元素上监听
+3. 在document的事件处理，React会根据虚拟DOM树的完成事件函数的调用
+4. React的事件参数，并非真实的DOM事件参数，是React合成的一个对象，该对象类似于真实DOM的事件参数
+   1. stopPropagation，阻止事件在虚拟DOM树中冒泡
+   2. nativeEvent，可以得到真实的DOM事件对象
+   3. 为了提高执行效率，React使用事件对象池来处理事件对象
+
+**注意事项**
+
+1. 如果给真实的DOM注册事件，阻止了事件冒泡，则会导致react的相应事件无法触发
+2. 如果给真实的DOM注册事件，事件会先于React事件运行
+3. 通过React的事件中阻止事件冒泡，无法阻止真实的DOM事件冒泡
+4. 可以通过nativeEvent.stopImmediatePropagation()，阻止document上剩余事件的执行
+5. 在事件处理程序中，不要异步的使用事件对象，如果一定要使用，需要调用persist函数
+
+## 渲染原理
+
+渲染：生成用于显示的对象，以及将这些对象形成真实的DOM对象
+
+- React元素：React Element，通过React.createElement创建（语法糖：JSX）
+  - 例如：
+  - ```<div><h1>标题</h1></div>```
+  - ```<App />```
+- React节点：专门用于渲染到UI界面的对象，React会通过React元素，创建React节点，ReactDOM一定是通过React节点来进行渲染的
+- 节点类型：
+  - React DOM节点：创建该节点的React元素类型是一个字符串
+  - React 组件节点：创建该节点的React元素类型是一个函数或是一个类
+  - React 文本节点：由字符串、数字创建的
+  - React 空节点：由null、undefined、false、true
+  - React 数组节点：该节点由一个数组创建
+- 真实DOM：通过document.createElement创建的dom元素
