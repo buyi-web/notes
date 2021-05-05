@@ -2,6 +2,8 @@
 
 HOOK是React16.8.0之后出现
 
+[hook api](https://reactjs.org/docs/hooks-reference.html)
+
 组件：无状态组件（函数组件）、类组件
 
 类组件中的麻烦：
@@ -55,7 +57,7 @@ Effect Hook：用于在函数组件中处理副作用
 
 函数：useEffect，该函数接收一个函数作为参数，接收的函数就是需要进行副作用操作的函数
 
-**细节**
+**细节**:
 
 1. 副作用函数的运行时间点，是在页面完成真实的UI渲染之后。因此它的执行是异步的，并且不会阻塞浏览器
    1. 与类组件中componentDidMount和componentDidUpdate的区别
@@ -75,3 +77,84 @@ Effect Hook：用于在函数组件中处理副作用
       2. 清理函数仅在卸载组件后运行
 5. 副作用函数中，如果使用了函数上下文中的变量，则由于闭包的影响，会导致副作用函数中变量不会实时变化。
 6. 副作用函数在每次注册时，会覆盖掉之前的副作用函数，因此，尽量保持副作用函数稳定，否则控制起来会比较复杂。
+
+## Reducer Hook
+
+Flux：Facebook出品的一个数据流框架
+
+1. 规定了数据是单向流动的
+2. 数据存储在数据仓库中（目前，可以认为state就是一个存储数据的仓库）
+3. action是改变数据的唯一原因（本质上就是一个对象，action有两个属性）
+   1. type：字符串，动作的类型
+   2. payload：任意类型，动作发生后的附加信息
+   3. 例如，如果是添加一个学生，action可以描述为：
+      1. ```{ type:"addStudent", payload: {学生对象的各种信息} }```
+   4. 例如，如果要删除一个学生，action可以描述为：
+      1. ```{ type:"deleteStudent", payload: 学生id }```
+4. 具体改变数据的是一个函数，该函数叫做reducer
+   1. 该函数接收两个参数
+      1. state：表示当前数据仓库中的数据
+      2. action：描述了如何去改变数据，以及改变数据的一些附加信息
+   2. 该函数必须有一个返回结果，用于表示数据仓库变化之后的数据
+      1. Flux要求，对象是不可变的，如果返回对象，必须创建新的对象
+   3. reducer必须是纯函数，不能有任何副作用
+5. 如果要触发reducer，不可以直接调用，而是应该调用一个辅助函数dispatch
+   1. 该函数仅接收一个参数：action
+   2. 该函数会间接去调用reducer，以达到改变数据的目的
+
+**实现useReducer**：
+
+```js
+import { useState } from "react"
+/**
+ * 通用的useReducer函数
+ * @param {function} reducer reducer函数，标准格式
+ * @param {any} initialState 初始状态
+ * @param {function} initFunc 用于计算初始值的函数
+ */
+export default function useReducer(reducer, initialState, initFunc) {
+    const [state, setState] = useState(initFunc? initFunc(initialState): initialState)
+
+    function dispatch(action) {
+        const newState = reducer(state, action)
+        console.log(`日志：n的值  ${state}->${newState}`)
+        setState(newState);
+    }
+
+    return [state, dispatch];
+}
+```
+
+## Context Hook
+
+用于获取上下文数据
+
+**举例**：
+
+```js
+import React, { useContext } from 'react'
+
+const ctx = React.createContext();
+
+// function Test() {
+//     return <ctx.Consumer>
+//         {value => <h1>Test，上下文的值：{value}</h1>}
+//     </ctx.Consumer>
+// }
+
+function Test() {
+    const value = useContext(ctx);
+    return <h1>Test，上下文的值：{value}</h1>
+}
+
+export default function App() {
+    return (
+        <div>
+            <ctx.Provider value="abc">
+                <Test />
+            </ctx.Provider>
+        </div>
+    )
+}
+
+```
