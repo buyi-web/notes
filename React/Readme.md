@@ -111,7 +111,7 @@ React < 16.0.0
 
 React >= 16.0.0
 
-![新版生命周期](../img/old_react_lifecycle.jpg)
+![新版生命周期](../img/new_react_lifecycle.jpg)
 
 React官方认为，某个数据的来源必须是单一的
 
