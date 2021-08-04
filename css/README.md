@@ -198,3 +198,12 @@ BFC 布局规则：
 - 写入 CSS， 减少 HTTP 请求
 - 适用于小图片
 - base64 的体积约为原图 4/3
+
+## less和sass的区别
+
+1. Less和Sass的主要不同就是他们的实现方式。
+    - Less是基于JavaScript，是在客户端处理的。
+    - Sass是基于Ruby的，是在服务器端处理的。
+2. 关于变量在Less和Sass中的唯一区别就是Less用@，Sass用$。
+
+[面试必看：less与sass的区别](https://www.jianshu.com/p/029792f0c97d)
