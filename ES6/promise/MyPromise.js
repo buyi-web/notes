@@ -24,21 +24,24 @@ const MyPromise = (() => {
                 this[changeStatus](RESOLVED, data, this[thenable])
             }
             const reject = (data) => {
-                this[changeStatus](RESOLVED, data, this[thenable])
+                this[changeStatus](REJECTED, data, this[catchable])
             }
 
-            executor(resolve, reject)
+            try {
+                executor(resolve, reject)
+            } catch (error) {
+                this[changeStatus](REJECTED, error); //捕获错误，有错误推向reject
+            }
         }
 
         then(thenHandle, catchHandle)  {
-            return new MyPromise((resolve, reject)  => {
+            return new MyPromise((resolve, reject) => {
+                console.log('new ');
                 this[settled] (data => {
                     try{
                         if(typeof thenHandle === 'function') {
                             const result = thenHandle(data)
-                            console.log('---', result);
-                            //返回的result是一个promise对象的处理
-                            if(result instanceof MyPromise) {
+                            if(result instanceof MyPromise) { // 返回的result是一个promise对象的处理
                                 result.then(data => resolve(data), error => reject(error))
                             }else {
                                 resolve(result)
@@ -50,6 +53,7 @@ const MyPromise = (() => {
                         reject(error)
                     }
                 }, RESOLVED, this[thenable])
+
                 if(catchHandle != undefined) {
                     this[settled](data => {
                         try {
@@ -91,19 +95,17 @@ const MyPromise = (() => {
          * @param {*} queue 执行的作业队列
          */
         [changeStatus] (status, value, queue) {
-            console.log(status, value, queue);
             if (this[promiseStatus] !== PENDING) {
                 //状态无法变更
                 return;
             }
             this[promiseStatus] = status
             this[promiseValue] = value
-
             //状态改变时，执行相应队列中的函数
             if(queue == null || queue.length == 0) {
                 return 
             }
-            queue.forEach(handle => handle())
+            queue.forEach(handle => handle(this[promiseValue]))
         }
 
         [settled](handle, status, queue) {
@@ -117,6 +119,57 @@ const MyPromise = (() => {
             }else {
                 queue.push(handle)
             }
+        }
+
+        static resolve(data){
+            if(data instanceof MyPromise){
+                return data;
+            }
+            return new MyPromise(resolve=>{
+                resolve(data)
+            })
+        }
+
+        static reject(data){
+            return new MyPromise(reject=>{
+                reject(data);
+            })
+        }
+        
+        static all(proms){
+            return new MyPromise((resolve, reject) => {
+                const results = proms.map(p => {
+                    const resultSattus = {
+                        result: undefined,
+                        isFulfilled: false
+                    }
+                    p.then(data => {
+                        resultSattus.result = data,
+                        resultSattus.isFulfilled = true
+
+                        //每个promsie执行时都要判断是否还有未完成的promsie
+                        const unFulfilled = results.filter(r => !r.isFulfilled)
+                        if(unFulfilled.length === 0){
+                            resolve(results)
+                        }
+                    })
+                    return resultSattus;
+                }, err => {
+                    reject(err)
+                })
+            })
+        }
+
+        static race(proms) {
+            return new Promise((resolve, reject) => {
+                proms.forEach(p => {
+                    p.then(data => {
+                        resolve(data);
+                    }, err => {
+                        reject(err);
+                    })
+                })
+            })
         }
     }
 })()

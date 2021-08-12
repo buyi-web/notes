@@ -14,24 +14,26 @@
             resolve(1)
             // reject(11)
         })
-        var p = new Promise((resolve, reject) => {
-            console.log(222);
-            resolve(2)
-            // reject(22)
-        })
+        // var p = new Promise((resolve, reject) => {
+        //     console.log(222);
+        //     resolve(2)
+        //     // reject(22)
+        // })
 
-        pro.then(data => {
+        var pro1 = pro.then(data => {
             console.log(data * 2);
             return data * 2
-        }).then(data => {
-            console.log(data + 'pro');
         })
-        p.then(data => {
-            console.log(data * 2);
-            return data * 2
-        }).then(data => {
-            console.log(data + 'ppp');
+        console.log(pro1);
+        pro1.then(data => {
+            console.log('data2,:', data);
         })
+        // p.then(data => {
+        //     console.log(data * 2);
+        //     return data * 2
+        // }).then(data => {
+        //     console.log(data + 'ppp');
+        // })
     </script>
 </body>
 </html>
