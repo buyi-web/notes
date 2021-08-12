@@ -90,6 +90,3 @@ webpack通过npm安装，它提供了两个包：
     "dev": "webpack --mode=development"
 },
 ```
-
-## [编译结果分析]
-
