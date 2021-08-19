@@ -1,4 +1,4 @@
-# ES6
+# ES6 === es2015
 
 ## ECMAScript、JavaScript、NodeJs，它们的区别是什么？
 
