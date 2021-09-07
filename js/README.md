@@ -2,7 +2,21 @@
 
 ## [变量](https://github.com/buyi-web/notes/blob/master/js/%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B.md)
 
+## [作用域](https://github.com/buyi-web/notes/blob/master/js/%E4%BD%9C%E7%94%A8%E5%9F%9F.md)
+
+## [函数](https://github.com/buyi-web/notes/blob/master/js/%E5%87%BD%E6%95%B0.md)
+
+## [原型与继承](https://github.com/buyi-web/notes/blob/master/js/%E5%8E%9F%E5%9E%8B%E4%B8%8E%E7%BB%A7%E6%89%BF.md)
+
+## [this](https://github.com/buyi-web/notes/blob/master/js/this.md)
+
+## [DOM](https://github.com/buyi-web/notes/blob/master/js/DOM.md)
+
+## [事件轮询](https://github.com/buyi-web/notes/blob/master/js/%E4%BA%8B%E4%BB%B6%E8%BD%AE%E8%AF%A2.md)
+
 ## [BOM](https://github.com/buyi-web/notes/blob/master/js/BOM.md)
+
+## [RegExp](https://github.com/buyi-web/notes/blob/master/js/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F.md)
 
 ## 其他常见问题
 
