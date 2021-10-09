@@ -2,3 +2,4 @@ node-modules
 dist
 cache
 .DS_Store
+test
