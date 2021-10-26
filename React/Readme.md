@@ -48,13 +48,19 @@ React是由**Facebook**研发的、用于**解决UI复杂度**的开源**JavaScr
 **如果没有特殊处理，在事件处理函数中，this指向undefined**
 
 1. 使用bind函数，绑定this
-2. 使用箭头函数
+2. 使用箭头函数(使用箭头函数进行赋值后（其实是esnext的语法糖），函数在实例的属性上，而不再在原型上)
 
 ## 深入认识 setState
 
 setState，它对状态的改变，**可能**是异步的
 
-> 如果改变状态的代码处于某个HTML元素的事件中，则其是异步的，否则是同步
+[React 中 setState 什么时候是同步的，什么时候是异步的](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/17)
+
+> 在React中，如果是由React引发的事件处理（比如通过onClick引发的事件处理），调用setState不会同步更新this.state，除此之外的setState调用会同步执行this.state 。所谓“除此之外”，指的是绕过React通过addEventListener直接添加的事件处理函数，还有通过setTimeout/setInterval产生的异步调用。
+
+> 原因： 在React的setState函数实现中，会根据一个变量isBatchingUpdates判断是直接更新this.state还是放到队列中回头再说，而isBatchingUpdates默认是false，也就表示setState会同步更新this.state，但是，有一个函数batchedUpdates，这个函数会把isBatchingUpdates修改为true，而当React在调用事件处理函数之前就会调用这个batchedUpdates，造成的后果，就是由React控制的事件处理过程setState不会同步更新this.state。
+
+> 注意： setState的“异步”并不是说内部由异步代码实现，其实本身执行的过程和代码都是同步的，只是合成事件和钩子函数的调用顺序在更新之前，导致在合成事件和钩子函数中没法立马拿到更新后的值，形式了所谓的“异步”，当然可以通过第二个参数 setState(partialState, callback) 中的callback拿到更新后的结果。
 
 如果遇到某个事件中，需要同步调用多次，需要使用函数的方式得到最新状态
 
@@ -62,8 +68,8 @@ setState，它对状态的改变，**可能**是异步的
 
 1. 把所有的setState当作是异步的
 2. 永远不要信任setState调用之后的状态
-3. 如果要使用改变之后的状态，需要使用回调函数（setState的第二个参数,所有状态全部更新完成，并且重新渲染后执行）
-4. 如果新的状态要根据之前的状态进行运算，使用函数的方式改变状态（setState的第一个参数）
+3. 如果要使用改变之后的状态，需要使用回调函数 （setState的第二个参数, 所有状态全部更新完成，并且重新渲染后执行）
+4. 如果新的状态要根据之前的状态进行运算，使用函数的方式改变状态 `setState((state, props) => { reutrn { ... }})`（setState的第一个参数）
 
 React会对异步的setState进行优化，将多次setState进行合并（将多次状态改变完成后，再统一对state进行改变，然后触发render）
 
@@ -259,13 +265,15 @@ HOC: Higher-Order Component, 高阶组件，以组件作为参数，并返回一
 
 reference: 引用
 
+**字符串**
+
 场景：希望直接使用dom元素中的某个方法，或者希望直接使用自定义组件中的某个方法
 
 1. ref作用于内置的html组件，得到的将是真实的dom对象
 2. ref作用于类组件，得到的将是类的实例
 3. ref不能作用于函数组件
 
-ref不再推荐使用字符串赋值，字符串赋值的方式将来可能会被移出
+ref不再推荐使用字符串赋值，字符串赋值的方式将来可能会被移出（效率和灵活度的原因）
 目前，ref推荐使用对象或者是函数
 
 **对象**
@@ -343,6 +351,8 @@ React中的上下文特点：
 2. 如果某个组件依赖了上下文，会导致该组件不再纯粹（外部数据仅来源于属性props）
 3. 一般情况下，用于第三方组件（通用组件）
 
+[React 学习之 Context (旧与新)](https://juejin.cn/post/6985104812232671268#heading-6)
+
 ### 旧的API
 
 **创建上下文**：
@@ -378,15 +388,14 @@ React中的上下文特点：
 
 1. Provider属性：生产者。一个组件，该组件会创建一个上下文，该组件有一个value属性，通过该属性，可以为其数据赋值
    1. 同一个Provider，不要用到多个组件中，如果需要在其他组件中使用该数据，应该考虑将数据提升到更高的层次
-2. Consumer属性：后续讲解
 
 **使用上下文中的数据**：
 
 1. 在类组件中，直接使用this.context获取上下文数据
-   1. 要求：必须拥有静态属性 contextType , 应赋值为创建的上下文对象
+   1. 要求：必须拥有静态属性 contextType  (注意：type 没有 s), 应赋值为创建的上下文对象 (```static contextType = ctx```)
 2. 在函数组件中，需要使用Consumer来获取上下文数据
    1. Consumer是一个组件
-   2. 它的子节点，是一个函数（它的props.children需要传递一个函数）
+   2. 它的子节点，是一个函数（它的props.children需要传递一个函数, 这个函数的参数即为上下文的数据 (或者使用后面 Hook 文章中的 useContext Hook)
 
 **注意细节**：
 
