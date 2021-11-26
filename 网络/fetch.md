@@ -510,4 +510,3 @@ fetch('http://another.com', {
     - Access-Control-Max-Age 带有指定缓存权限的秒数。
 
 - 然后，发出实际请求，应用先前的“简单”方案。
-
