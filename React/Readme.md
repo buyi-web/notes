@@ -72,6 +72,83 @@ setState，它对状态的改变，**可能**是异步的
 4. 如果新的状态要根据之前的状态进行运算，使用函数的方式改变状态 `setState((state, props) => { reutrn { ... }})`（setState的第一个参数）
 
 React会对异步的setState进行优化，将多次setState进行合并（将多次状态改变完成后，再统一对state进行改变，然后触发render）
+### Automatic batching
+
+react 18: 批量更新是指多个state，而不是一个state多次更新。
+差别: 
+之前：
+```js
+function App() {
+  const [count, setCount] = useState(0);
+  const [flag, setFlag] = useState(false);
+
+  function handleClick() {
+    setCount(c => c + 1);
+    setFlag(f => !f);
+    // 两个属性更新了，但React只渲染一次（这个就是批量更新）
+  }
+  
+  function handleClick2() {
+    fetchSomething().then(() => {
+      // React 17 及之前不会批量更新
+      setCount(c => c + 1); // Causes a re-render
+      setFlag(f => !f); // Causes a re-render
+    });
+  }
+
+  return (
+    <div>
+      <button onClick={handleClick}>Next</button>
+      <h1 style={{ color: flag ? "blue" : "black" }}>{count}</h1>
+    </div>
+  );
+}
+```
+React 18之前仅仅只有React事件处理函数中是批量更新的，promise，setTimeout，原生事件和其它事件中都不是批量更新。
+
+而React18中，在promise，setTimeout，原生事件和其它事件中也都会批量更新了。
+
+```js
+function App() {
+  const [count, setCount] = useState(0);
+  const [flag, setFlag] = useState(false);
+
+  function handleClick() {
+    fetchSomething().then(() => {
+      // React 18 并且使用 New root API
+      setCount(c => c + 1);
+      setFlag(f => !f);
+      // 只会渲染一次
+    });
+  }
+
+  return (
+    <div>
+      <button onClick={handleClick}>Next</button>
+      <h1 style={{ color: flag ? "blue" : "black" }}>{count}</h1>
+    </div>
+  );
+}
+
+```
+
+不选批量更新
+
+```js
+import { flushSync } from 'react-dom';
+
+function handleClick() {
+  flushSync(() => {
+    setCounter(c => c + 1);
+  });
+  // React 现在更新DOM了
+  flushSync(() => {
+    setFlag(f => !f);
+  });
+  // React 现在更新DOM了
+}
+
+```
 
 ## 生命周期
 
