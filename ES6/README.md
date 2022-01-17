@@ -1,5 +1,7 @@
 # ES6 === es2015
 
+[toc]
+
 ## ECMAScript、JavaScript、NodeJs，它们的区别是什么？
 
 ECMAScript：简称ES，是一个语言标准（循环、判断、变量、数组等数据类型）
