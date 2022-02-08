@@ -30,11 +30,28 @@ mvc 和 mvvm 其实区别并不大。都是一种设计思想。主要就是 mvc
 
 ## vue的响应式
 
+vue.js是采用数据劫持结合发布者-订阅者模式的方式，通过Object.defineProperty()来劫持各个属性的setter和getter，在数据变动时发布消息给订阅者，触发相应的监听回调
+
+`Observer（数据监听器）` : Observer的核心是通过Object.defineProprtty()来监听数据的变动，这个函数内部可以定义setter和getter，每当数据发生变化，就会触发setter。这时候Observer就要通知订阅者，订阅者就是Watcher
+
+`Watcher（订阅者） `: Watcher订阅者作为Observer和Compile之间通信的桥梁，主要做的事情是：
+
+在自身实例化时往属性订阅器(dep)里面添加自己
+自身必须有一个update()方法
+待属性变动dep.notice()通知时，能调用自身的update()方法，并触发Compile中绑定的回调
+
+`Compile（指令解析器） `: Compile主要做的事情是解析模板指令，将模板中变量替换成数据，然后初始化渲染页面视图，并将每个指令对应的节点绑定更新函数，添加鉴定数据的订阅者，一旦数据有变动，收到通知，更新试图
+
 ### 为什么data会直接出现在vm实例对象中咧？
 
 当创建vue实例的时候，vue会将data中的成员代理给vue实例，目的是为了实现响应式，监控数据的变化，如何做到的呢？vue2中是使用Object.defineProperty，vue3.0中用proxy
 
 假如说我们自己写的data名称和vue中自带的属性冲突了，那么就会覆盖vue内部的属性，所以为了防止名称冲突，vue会把自己内部的属性成员名称前加上$或_，如果加上的是$，代表是我们可以使用的，如果加上的是_，是vue自己内部使用的方法或属性，我们不需要调用
+
+### 组件中的data为什么是一个函数？
+
+1.一个组件被复用多次的话，也就会创建多个实例。本质上，这些实例用的都是同一个构造函数。 2.如果data是对象的话，对象属于引用类型，会影响到所有的实例。所以为了保证组件不同的实例之间data不冲突，data必须是一个函数。
+
 
 ## v-if 和 v-show 的区别
 
@@ -47,6 +64,11 @@ mvc 和 mvvm 其实区别并不大。都是一种设计思想。主要就是 mvc
 4. v-show不支持`<template>`元素
 
 5. v-show不支持v-else/v-else-if
+
+## computed与watch
+
+通俗来讲，既能用 computed 实现又可以用 watch 监听来实现的功能，推荐用 computed， 重点在于 computed 的缓存功能 computed 计算属性是用来声明式的描述一个值依赖了其它的值，当所依赖的值或者变量 改变时，计算属性也会跟着改变； watch 监听的是已经在 data 中定义的变量，当该变量变化时，会触发 watch 中的方法。
+
 
 ## 组件_通信
 
