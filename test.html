@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const address = [
+            {
+                id: 1,
+                name: '北京市',
+                children: [
+                    {
+                        id: 11,
+                        name: '海淀区',
+                        children: [
+                            {
+                                id: 111,
+                                name: '中关村',
+                            }
+                        ]
+                    },
+                    {
+                        id: 12,
+                        name: '朝阳区',
+                    },
+                ],
+            },
+            {
+                id: 2,
+                name: '河北省'
+            }
+        ]
+
+        // 请实现该函数
+        // 输入：getNameById(address, 2)，输出："河北省"
+        // 输入：getNameById(address, 111)，输出："中关村"
+        // 输入：getNameById(address, 32)，输出："" （未查找到，输出空字符串）
+        function getNameById(address, id) {
+            // 在这里实现你的代码
+            let res = ''
+            for (let i = 0; i < address.length; i++) {
+                const item = address[i];
+                if (item.id == id) {
+                    res = item.name
+                }
+                if (item.children && item.children.length > 0) {
+                    res = getNameById(item.children, id)
+                }
+            }
+            return res;
+        }
+
+        console.log(getNameById(address, 2));
+        console.log(getNameById(address, 111));
+        console.log(getNameById(address, 32));
+        var a1 = [{
+            name: 'buyi',
+            age: 18
+        }]
+        var a2 = [{
+            name: 'buyi2',
+            age: 182
+        }, {
+            name: '333',
+            age: 333
+        }]
+        let mergeTwoarr = (a1, a2) => {
+            a2.map(item => {
+                a1.push(item)
+            })
+            console.log('结果是', a1)
+            return a1
+        }
+        mergeTwoarr(a1, a2)
+    </script>
+</body>
+
+</html>
