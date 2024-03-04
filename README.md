@@ -19,4 +19,4 @@
 
 ## 其他
 
-![谈起音视频，前端能做些什么](https://blog.csdn.net/weixin_34411563/article/details/88731619)
+[谈起音视频，前端能做些什么](https://blog.csdn.net/weixin_34411563/article/details/88731619)
