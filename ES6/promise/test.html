@@ -9,31 +9,78 @@
 <body>
     <script src="./MyPromise.js"></script>
     <script>
-        var pro = new MyPromise((resolve, reject) => {
-            console.log(111);
-            resolve(1)
-            // reject(11)
-        })
-        // var p = new Promise((resolve, reject) => {
-        //     console.log(222);
-        //     resolve(2)
-        //     // reject(22)
+        // var pro = new MyPromise((resolve, reject) => {
+        //     console.log(111);
+        //     resolve(1)
+        //     // reject(11)
         // })
+        // // var p = new Promise((resolve, reject) => {
+        // //     console.log(222);
+        // //     resolve(2)
+        // //     // reject(22)
+        // // })
 
-        var pro1 = pro.then(data => {
-            console.log(data * 2);
-            return data * 2
-        })
-        console.log(pro1);
-        pro1.then(data => {
-            console.log('data2,:', data);
-        })
-        // p.then(data => {
+        // var pro1 = pro.then(data => {
         //     console.log(data * 2);
         //     return data * 2
-        // }).then(data => {
-        //     console.log(data + 'ppp');
         // })
+        // console.log(pro1);
+        // pro1.then(data => {
+        //     console.log('data2,:', data);
+        // })
+        // // p.then(data => {
+        // //     console.log(data * 2);
+        // //     return data * 2
+        // // }).then(data => {
+        // //     console.log(data + 'ppp');
+        // // })
+
+        // new Promise(function(resolve) {
+        //     console.log('qwer')
+        //     setTimeout(() => {
+        //         resolve()
+        //         console.log(444);   
+        //     });
+        //     console.log(333);
+        // }).then(() => {
+        //     console.log('asd');
+        // })
+        // console.log('111');
+        // setTimeout(() => {
+        //     console.log(222);
+        // })
+        class Test {
+            constructor() {
+                this.obj = {
+                    a: 'aa'
+                }
+                this._age = 18
+                this.un = void 0;
+            }
+
+            state = {
+                name: 'buyi'
+            }
+
+            print = () => {
+                console.log(this.age);
+            }
+
+            print1() {
+                console.log(this.age);
+            }
+
+            get age() {
+                console.log('this.age');
+                return this._age
+            }
+
+            set age(val) {
+                console.log('new val', val);
+            }
+        }
+
+        const t = new Test()
     </script>
 </body>
 </html>
